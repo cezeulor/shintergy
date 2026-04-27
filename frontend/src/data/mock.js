@@ -231,8 +231,7 @@ export const chatQuestions = [
     text: "Para enviarte la cotización, déjame tus datos:",
     fields: [
       { name: "name", label: "Nombre completo", type: "text", required: true },
-      { name: "email", label: "Correo electrónico", type: "email", required: true },
-      { name: "phone", label: "Teléfono / WhatsApp", type: "tel", required: true },
+      { name: "phone", label: "Teléfono / WhatsApp con LADA", type: "tel", required: true },
     ],
     next: "summary",
   },

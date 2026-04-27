@@ -6,7 +6,7 @@ import uuid
 
 class ContactInfo(BaseModel):
     name: str
-    email: EmailStr
+    email: Optional[EmailStr] = None
     phone: str
 
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, MessageCircle, Wrench, Phone, Trees } from 'lucide-react';
+import { ArrowRight, MessageCircle, Wrench, Phone, Trees, FileText } from 'lucide-react';
 import { Button } from './ui/button';
 import { companyInfo } from '../data/mock';
 
@@ -136,13 +136,23 @@ export const HeroSection = ({ onOpenChat }) => {
 
             <Button
               size="lg"
+              data-testid="hero-cta-cotizador"
+              onClick={onOpenChat}
+              className="bg-white text-[#1a5336] hover:bg-gray-100 font-semibold px-8 py-6 text-base md:text-lg group shadow-xl hover:-translate-y-0.5 transition-all duration-300"
+            >
+              <FileText className="mr-2 h-5 w-5" />
+              Cotizar en línea
+            </Button>
+
+            <Button
+              size="lg"
               variant="outline"
               data-testid="hero-cta-whatsapp"
               onClick={whatsappClick}
               className="bg-white/10 backdrop-blur-md border-2 border-white/60 text-white hover:bg-white hover:text-[#1a5336] px-8 py-6 text-base md:text-lg group transition-all duration-300"
             >
               <MessageCircle className="mr-2 h-5 w-5" />
-              Solicitar información
+              WhatsApp
             </Button>
           </div>
 

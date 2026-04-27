@@ -139,20 +139,24 @@ async def create_quote(quote_request: QuoteRequest):
             logger.error(f"Error generating PDF: {e}")
             pdf_path = None
         
-        email_result = await email_service.send_quote_email(
-            recipient_email=quote.contact_info.email,
-            recipient_name=quote.contact_info.name,
-            quote_id=quote.id,
-            service_type=quote.service_type,
-            total_price=quote.total_price,
-            pdf_path=pdf_path
-        )
-        
-        if email_result.get('success'):
-            quote_dict['email_sent'] = True
-            logger.info(f"Email sent successfully to {quote.contact_info.email}")
-        
-        await email_service.send_notification_email(quote_dict)
+        # Email opcional: solo enviamos si el usuario dejó email
+        email_result = {'success': False}
+        if quote.contact_info.email:
+            try:
+                email_result = await email_service.send_quote_email(
+                    recipient_email=quote.contact_info.email,
+                    recipient_name=quote.contact_info.name,
+                    quote_id=quote.id,
+                    service_type=quote.service_type,
+                    total_price=quote.total_price,
+                    pdf_path=pdf_path
+                )
+                if email_result.get('success'):
+                    quote_dict['email_sent'] = True
+                    logger.info(f"Email sent successfully to {quote.contact_info.email}")
+                await email_service.send_notification_email(quote_dict)
+            except Exception as e:
+                logger.error(f"Email send failed: {e}")
         
         await db.quotes.update_one(
             {'id': quote.id},
@@ -175,6 +179,19 @@ async def create_quote(quote_request: QuoteRequest):
         logger.error(f"Error creating quote: {str(e)}")
         from fastapi import HTTPException
         raise HTTPException(status_code=500, detail=f"Error al crear cotización: {str(e)}")
+
+@api_router.get("/quotes/{quote_id}/pdf")
+async def get_quote_pdf(quote_id: str):
+    from fastapi.responses import FileResponse
+    from fastapi import HTTPException
+    pdf_path = f"/tmp/generated_pdfs/cotizacion_shintergy_{quote_id}.pdf"
+    if not os.path.exists(pdf_path):
+        raise HTTPException(status_code=404, detail="PDF no encontrado")
+    return FileResponse(
+        pdf_path,
+        media_type="application/pdf",
+        filename=f"cotizacion-shintergy-{quote_id[:8]}.pdf",
+    )
 
 @api_router.get("/quotes/{quote_id}")
 async def get_quote(quote_id: str):
