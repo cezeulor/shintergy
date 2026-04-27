@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight, MessageCircle, Wrench, Phone, Trees, FileText } from 'lucide-react';
+import { ArrowRight, MessageCircle, Wrench, Phone, FileText } from 'lucide-react';
 import { Button } from './ui/button';
 import { companyInfo } from '../data/mock';
 
@@ -154,18 +153,6 @@ export const HeroSection = ({ onOpenChat }) => {
               <MessageCircle className="mr-2 h-5 w-5" />
               WhatsApp
             </Button>
-          </div>
-
-          {/* Subpage link */}
-          <div className="mt-6 animate-in fade-in slide-in-from-bottom-12 duration-700 delay-700">
-            <Link
-              to="/terrenos"
-              data-testid="hero-link-terrenos"
-              className="inline-flex items-center gap-2 text-sm text-white/80 hover:text-[#c9a961] underline-offset-4 hover:underline transition-colors duration-200"
-            >
-              <Trees className="h-4 w-4 text-[#c9a961]" />
-              ¿Buscas terrenos en Xalapa? Conoce nuestros lotes con escrituras →
-            </Link>
           </div>
 
           {/* Stats */}

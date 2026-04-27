@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Header } from "../components/Header";
 import { HeroSection } from "../components/HeroSection";
 import { MaquinariaSection } from "../components/MaquinariaSection";
-import { TerrenosCTA } from "../components/TerrenosCTA";
 import { AdvantagesSection } from "../components/AdvantagesSection";
 import { ProcessSection } from "../components/ProcessSection";
 import { GallerySection } from "../components/GallerySection";
@@ -22,7 +21,6 @@ export const Home = () => {
       <MaquinariaSection onOpenChat={handleOpenChat} />
       <AdvantagesSection />
       <ProcessSection />
-      <TerrenosCTA />
       <GallerySection />
       <PresenceSection />
       <div id="contacto">

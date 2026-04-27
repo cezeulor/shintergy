@@ -1,7 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-// Reveal on scroll helper, lightweight
 export const MotionReveal = ({
   children,
   delay = 0,
@@ -10,22 +9,19 @@ export const MotionReveal = ({
   className = "",
   once = true,
   ...rest
-}) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once, margin: "-80px" }}
-      transition={{ duration, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}
-      {...rest}
-    >
-      {children}
-    </motion.div>
-  );
-};
+}) => (
+  <motion.div
+    initial={{ opacity: 0, y }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once, margin: "-80px" }}
+    transition={{ duration, delay, ease: [0.22, 1, 0.36, 1] }}
+    className={className}
+    {...rest}
+  >
+    {children}
+  </motion.div>
+);
 
-// 3D tilt card wrapper - mouse-tracked perspective
 export const TiltCard = ({ children, className = "", intensity = 10 }) => {
   const ref = React.useRef(null);
   const [style, setStyle] = React.useState({});
@@ -42,11 +38,9 @@ export const TiltCard = ({ children, className = "", intensity = 10 }) => {
       )}deg) rotateY(${(x * intensity).toFixed(2)}deg) translateZ(0)`,
     });
   };
-
   const onLeave = () =>
     setStyle({
-      transform:
-        "perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0)",
+      transform: "perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0)",
     });
 
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, Phone, Trees } from 'lucide-react';
+import { Menu, X, Phone } from 'lucide-react';
 import { companyInfo } from '../data/mock';
 import { Button } from './ui/button';
 
@@ -34,7 +34,6 @@ export const Header = ({ onOpenChat }) => {
     { label: 'Ventajas', id: 'ventajas', isLink: false },
     { label: 'Proceso', id: 'proceso', isLink: false },
     { label: 'Galería', id: 'galeria', isLink: false },
-    { label: 'Terrenos', id: 'terrenos', isLink: true, to: '/terrenos' },
     { label: 'Contacto', id: 'contacto', isLink: false },
   ];
 

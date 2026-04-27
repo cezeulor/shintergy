@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { MapPin, Phone, Mail, Instagram, Facebook, Clock, Trees, Wrench } from 'lucide-react';
+import { MapPin, Phone, Mail, Instagram, Facebook, Clock, Wrench } from 'lucide-react';
 import { companyInfo, socialMedia } from '../data/mock';
 
 export const Footer = () => {
@@ -44,11 +43,6 @@ export const Footer = () => {
               </li>
               <li>
                 <a href="#galeria" className="text-gray-300 hover:text-[#c9a961] transition-colors duration-200">Galería</a>
-              </li>
-              <li>
-                <Link to="/terrenos" className="text-gray-300 hover:text-[#c9a961] transition-colors duration-200 flex items-center gap-2">
-                  <Trees className="h-3.5 w-3.5" /> Terrenos disponibles
-                </Link>
               </li>
             </ul>
           </div>
