@@ -269,19 +269,11 @@ Puedes descargar el PDF o enviarlo a tu WhatsApp con los botones de abajo. 👇`
                 Descargar PDF
               </Button>
               <Button
-                onClick={() => sendToWhatsApp(false)}
-                data-testid="chat-send-whatsapp"
+                onClick={() => sendToWhatsApp(true)}
+                data-testid="chat-send-company"
                 className="w-full bg-[#25D366] hover:bg-[#1fb358] text-white"
               >
                 <MessageCircle className="mr-2 h-4 w-4" />
-                Enviar a mi WhatsApp
-              </Button>
-              <Button
-                onClick={() => sendToWhatsApp(true)}
-                variant="outline"
-                data-testid="chat-send-company"
-                className="w-full border-[#1a5336]/30 text-[#1a5336] hover:bg-[#1a5336]/5"
-              >
                 Enviar a Shíntergy y agendar
               </Button>
               <p className="text-[11px] text-gray-500 text-center pt-1">
