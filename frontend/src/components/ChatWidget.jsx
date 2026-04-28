@@ -1,11 +1,14 @@
 import { CheckCircle2, Send, X, Download, MessageCircle } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { chatQuestions, companyInfo } from '../data/mock';
+import { chatQuestions } from '../data/mock';
+import { useContent } from '../context/ContentContext';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 
 export const ChatWidget = ({ isOpen, onClose }) => {
+  const { content } = useContent();
+  const companyInfo = content.company;
   const [messages, setMessages] = useState([]);
   const [currentQuestionId, setCurrentQuestionId] = useState('welcome');
   const [userResponses, setUserResponses] = useState({});

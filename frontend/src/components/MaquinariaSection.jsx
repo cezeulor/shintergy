@@ -15,12 +15,16 @@ import {
   MapPin,
   Sparkles,
 } from "lucide-react";
-import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
-import { maquina, companyInfo, zonasCobertura } from "../data/mock";
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
+import { useContent } from '../context/ContentContext';
 import { MotionReveal, TiltCard } from "./MotionReveal";
 
 export const MaquinariaSection = ({ onOpenChat }) => {
+  const { content } = useContent();
+  const maquina = content.maquina;
+  const companyInfo = content.company;
+  const zonasCobertura = content.zonasCobertura || [];
   const [imgIdx, setImgIdx] = useState(0);
 
   const wa = companyInfo.whatsappDigits;

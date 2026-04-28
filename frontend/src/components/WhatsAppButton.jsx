@@ -1,10 +1,12 @@
 import React from 'react';
 import { MessageCircle } from 'lucide-react';
-import { companyInfo } from '../data/mock';
+import { useContent } from '../context/ContentContext';
 
 export const WhatsAppButton = () => {
+  const { content } = useContent();
+  const companyInfo = content.company;
   const handleWhatsAppClick = () => {
-    const whatsappNumber = companyInfo.whatsapp.replace(/[^0-9]/g, '');
+    const whatsappNumber = companyInfo.whatsappDigits || companyInfo.whatsapp.replace(/[^0-9]/g, '');
     const message = encodeURIComponent('Hola, me gustaría solicitar información sobre sus servicios.');
     window.open(`https://wa.me/${whatsappNumber}?text=${message}`, '_blank');
   };

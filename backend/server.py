@@ -13,6 +13,11 @@ from datetime import datetime, timezone
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# Auth / content / images modules
+from auth import router as auth_router, seed_admin, build_otpauth_url
+from content_routes import router as content_router, seed_content
+from image_routes import router as image_router
+
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
@@ -209,6 +214,43 @@ async def list_quotes(limit: int = 50, skip: int = 0):
 
 # Include the router in the main app
 app.include_router(api_router)
+app.include_router(auth_router)
+app.include_router(content_router)
+app.include_router(image_router)
+
+
+@app.on_event("startup")
+async def on_startup():
+    # Ensure admin user + TOTP secret
+    admin = await seed_admin(db)
+    otpauth = build_otpauth_url(admin["totp_secret"], admin["username"])
+    logging.getLogger(__name__).info(
+        "[admin seed] user=%s  otpauth_url=%s",
+        admin["username"],
+        otpauth,
+    )
+    # Persist setup info for main agent / user to find
+    memory_dir = Path("/app/memory")
+    memory_dir.mkdir(parents=True, exist_ok=True)
+    creds_path = memory_dir / "admin_totp.md"
+    if not creds_path.exists():
+        qr_img_url = (
+            f"https://api.qrserver.com/v1/create-qr-code/?size=280x280&data="
+            f"{otpauth.replace(':', '%3A').replace('/', '%2F')}"
+        )
+        creds_path.write_text(
+            f"# Shíntergy Admin — TOTP\n\n"
+            f"Username: **{admin['username']}**\n\n"
+            f"TOTP secret: `{admin['totp_secret']}`\n\n"
+            f"otpauth URL: {otpauth}\n\n"
+            f"QR code (scan with Google Authenticator / Authy): {qr_img_url}\n"
+        )
+    await seed_content(db)
+    # Indexes
+    await db.admin_users.create_index("username", unique=True)
+    await db.site_content.create_index("key", unique=True)
+    await db.images.create_index("id", unique=True)
+
 
 app.add_middleware(
     CORSMiddleware,

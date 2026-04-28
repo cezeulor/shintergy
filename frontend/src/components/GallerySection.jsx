@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { galleryImages } from '../data/mock';
+import { useContent } from '../context/ContentContext';
 import { Badge } from './ui/badge';
 
 export const GallerySection = () => {
+  const { content } = useContent();
+  const galleryImages = content.galleryImages || [];
   const [selectedImage, setSelectedImage] = useState(null);
 
   return (

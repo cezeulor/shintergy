@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Phone } from 'lucide-react';
-import { companyInfo } from '../data/mock';
+import { useContent } from '../context/ContentContext';
 import { Button } from './ui/button';
 
 export const Header = ({ onOpenChat }) => {
+  const { content } = useContent();
+  const companyInfo = content.company;
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();

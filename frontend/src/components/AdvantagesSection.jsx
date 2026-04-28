@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShieldCheck, MapPin, FileCheck, Zap, Radar, Smartphone, Route, CalendarClock, MessageSquare } from 'lucide-react';
-import { advantages } from '../data/mock';
+import { useContent } from '../context/ContentContext';
 
 const iconMap = {
   ShieldCheck,
@@ -15,6 +15,8 @@ const iconMap = {
 };
 
 export const AdvantagesSection = () => {
+  const { content } = useContent();
+  const advantages = content.advantages || [];
   return (
     <section id="ventajas" className="py-24 bg-[#1a5336] text-white relative overflow-hidden">
       {/* Decorative Elements */}

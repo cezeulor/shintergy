@@ -1,6 +1,6 @@
 import React from 'react';
 import { MessageSquare, CalendarCheck, CheckCircle2 } from 'lucide-react';
-import { workProcess } from '../data/mock';
+import { useContent } from '../context/ContentContext';
 
 const iconMap = {
   MessageSquare,
@@ -9,6 +9,8 @@ const iconMap = {
 };
 
 export const ProcessSection = () => {
+  const { content } = useContent();
+  const workProcess = content.workProcess || [];
   return (
     <section id="proceso" className="py-24 bg-white">
       <div className="container mx-auto px-4">

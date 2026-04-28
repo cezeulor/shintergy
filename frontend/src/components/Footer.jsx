@@ -1,8 +1,12 @@
 import React from 'react';
 import { MapPin, Phone, Mail, Instagram, Facebook, Clock, Wrench } from 'lucide-react';
-import { companyInfo, socialMedia } from '../data/mock';
+import { useContent } from '../context/ContentContext';
 
 export const Footer = () => {
+  const { content } = useContent();
+  const companyInfo = content.company;
+  const socialMedia = content.social;
+  const zonasCobertura = content.zonasCobertura || [];
   const currentYear = new Date().getFullYear();
 
   return (
@@ -86,13 +90,9 @@ export const Footer = () => {
           <div>
             <h4 className="text-lg font-bold mb-4 text-[#c9a961]">Cobertura</h4>
             <ul className="space-y-1.5 text-sm text-gray-300">
-              <li>• Xalapa</li>
-              <li>• Coatepec</li>
-              <li>• San Marcos · Pacho</li>
-              <li>• La Orduña · Briones</li>
-              <li>• La Pitaya · El Grande</li>
-              <li>• Puerto Rico · Las Lomas</li>
-              <li>• Mundo Nuevo · Zimphizagua</li>
+              {zonasCobertura.map((z) => (
+                <li key={z}>• {z}</li>
+              ))}
             </ul>
           </div>
         </div>

@@ -1,9 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowRight, MessageCircle, Wrench, Phone, FileText } from 'lucide-react';
 import { Button } from './ui/button';
-import { companyInfo } from '../data/mock';
+import { useContent } from '../context/ContentContext';
 
 export const HeroSection = ({ onOpenChat }) => {
+  const { content } = useContent();
+  const companyInfo = content.company;
+  const hero = content.hero;
   const [scrollY, setScrollY] = useState(0);
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
   const heroRef = useRef(null);
@@ -88,31 +91,25 @@ export const HeroSection = ({ onOpenChat }) => {
           <div className="inline-flex items-center gap-2 bg-[#c9a961]/20 backdrop-blur-md border border-[#c9a961]/40 text-white px-4 py-2 rounded-full mb-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Wrench className="h-3.5 w-3.5 text-[#c9a961]" />
             <span className="text-xs md:text-sm font-medium">
-              Renta de retroexcavadora Caterpillar 420F2 IT
+              {hero.badge}
             </span>
           </div>
 
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-5 leading-[1.05] tracking-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
-            Soluciones en{' '}
+            {hero.titleStart}{' '}
             <span className="relative inline-block">
-              <span className="relative z-10 text-[#c9a961]">construcción</span>
+              <span className="relative z-10 text-[#c9a961]">{hero.titleHighlight}</span>
               <span className="absolute inset-x-0 bottom-1 h-3 bg-[#c9a961]/20 -skew-y-1 z-0"></span>
             </span>{' '}
-            con respaldo profesional
+            {hero.titleEnd}
           </h1>
 
           <p className="text-lg md:text-2xl text-gray-200 mb-8 max-w-2xl animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-            Más de 30 años de experiencia rentando maquinaria pesada en Xalapa,
-            Coatepec y zona conurbada. Operador, combustible y traslado{' '}
-            <strong>incluidos</strong>.
+            {hero.subtitle}
           </p>
 
           <div className="flex flex-wrap gap-2 mb-9 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
-            {[
-              'Operador certificado',
-              'Combustible incluido',
-              'Traslado sin costo',
-            ].map((f) => (
+            {(hero.pills || []).map((f) => (
               <div
                 key={f}
                 className="bg-white/10 backdrop-blur-md border border-white/20 text-white px-3 py-1.5 rounded-full text-xs md:text-sm"
