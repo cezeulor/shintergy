@@ -255,6 +255,8 @@ export const AdminDashboard = () => {
         <Tabs defaultValue="empresa" className="w-full">
           <TabsList className="flex flex-wrap h-auto mb-4">
             <TabsTrigger value="empresa">Empresa</TabsTrigger>
+            <TabsTrigger value="tema">Tema / Colores</TabsTrigger>
+            <TabsTrigger value="promociones">Promociones</TabsTrigger>
             <TabsTrigger value="hero">Hero</TabsTrigger>
             <TabsTrigger value="maquina">Máquina</TabsTrigger>
             <TabsTrigger value="imagenes">Imágenes</TabsTrigger>
@@ -262,6 +264,224 @@ export const AdminDashboard = () => {
             <TabsTrigger value="ventajas">Ventajas</TabsTrigger>
             <TabsTrigger value="galeria">Galería</TabsTrigger>
           </TabsList>
+
+          {/* TEMA / COLORES */}
+          <TabsContent value="tema">
+            <Card title="Paleta de colores del sitio">
+              <p className="text-sm text-gray-600 mb-4">
+                Cambia los colores principales del sitio. Los cambios se aplican al guardar. Haz clic en el cuadrito o escribe un código hex (ej. <code>#F5C518</code>).
+              </p>
+              <div className="grid md:grid-cols-2 gap-5">
+                {[
+                  { k: "primary", label: "Color primario (texto oscuro, botones)" },
+                  { k: "primaryDark", label: "Primario oscuro (hover)" },
+                  { k: "accent", label: "Color acento (destacados, CTAs)" },
+                  { k: "accentDark", label: "Acento oscuro (hover)" },
+                  { k: "bgDark", label: "Fondo oscuro (secciones negras)" },
+                  { k: "bgLight", label: "Fondo claro" },
+                  { k: "bgCream", label: "Fondo secundario" },
+                ].map(({ k, label }) => (
+                  <div key={k} className="border border-gray-200 rounded-lg p-3">
+                    <Label className="text-sm">{label}</Label>
+                    <div className="flex gap-2 items-center mt-1">
+                      <input
+                        type="color"
+                        value={draft.theme?.[k] || "#000000"}
+                        onChange={(e) => updatePath(`theme.${k}`, e.target.value)}
+                        className="h-11 w-14 rounded cursor-pointer border border-gray-200"
+                        data-testid={`theme-${k}-picker`}
+                      />
+                      <Input
+                        value={draft.theme?.[k] || ""}
+                        onChange={(e) => updatePath(`theme.${k}`, e.target.value)}
+                        placeholder="#000000"
+                        className="font-mono uppercase"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 grid grid-cols-3 gap-3">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      theme: {
+                        primary: "#0a0a0a",
+                        primaryDark: "#1f1f1f",
+                        accent: "#F5C518",
+                        accentDark: "#d4a810",
+                        bgDark: "#0a0a0a",
+                        bgLight: "#fafafa",
+                        bgCream: "#1a1a1a",
+                      },
+                    }))
+                  }
+                  className="p-3 border border-gray-200 rounded-lg hover:border-gray-400 flex flex-col items-center gap-1"
+                >
+                  <div className="flex gap-1">
+                    <span className="w-6 h-6 rounded bg-[#0a0a0a]"></span>
+                    <span className="w-6 h-6 rounded bg-[#F5C518]"></span>
+                  </div>
+                  <span className="text-xs">Perrón (negro + amarillo)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      theme: {
+                        primary: "#0c1213",
+                        primaryDark: "#1a2325",
+                        accent: "#fb923c",
+                        accentDark: "#ea580c",
+                        bgDark: "#0c1213",
+                        bgLight: "#fff7ed",
+                        bgCream: "#1a1a1a",
+                      },
+                    }))
+                  }
+                  className="p-3 border border-gray-200 rounded-lg hover:border-gray-400 flex flex-col items-center gap-1"
+                >
+                  <div className="flex gap-1">
+                    <span className="w-6 h-6 rounded bg-[#0c1213]"></span>
+                    <span className="w-6 h-6 rounded bg-[#fb923c]"></span>
+                  </div>
+                  <span className="text-xs">Construcción naranja</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setDraft((prev) => ({
+                      ...prev,
+                      theme: {
+                        primary: "#1a5336",
+                        primaryDark: "#143f28",
+                        accent: "#c9a961",
+                        accentDark: "#b99747",
+                        bgDark: "#0f1f18",
+                        bgLight: "#fafafa",
+                        bgCream: "#fbf8f1",
+                      },
+                    }))
+                  }
+                  className="p-3 border border-gray-200 rounded-lg hover:border-gray-400 flex flex-col items-center gap-1"
+                >
+                  <div className="flex gap-1">
+                    <span className="w-6 h-6 rounded bg-[#1a5336]"></span>
+                    <span className="w-6 h-6 rounded bg-[#c9a961]"></span>
+                  </div>
+                  <span className="text-xs">Verde clásico</span>
+                </button>
+              </div>
+            </Card>
+          </TabsContent>
+
+          {/* PROMOCIONES */}
+          <TabsContent value="promociones">
+            <Card title="Promociones / banners publicitarios">
+              <p className="text-sm text-gray-600 mb-3">
+                Estas promos aparecen en una sección propia en el sitio. Sube una imagen por promo (ideal formato cuadrado o 4:3).
+              </p>
+              <div className="space-y-4">
+                {(draft.promotions || []).map((p, i) => (
+                  <div
+                    key={p.id || i}
+                    className="grid md:grid-cols-12 gap-3 p-4 bg-gray-50 rounded-lg"
+                  >
+                    <div className="md:col-span-4">
+                      <div className="aspect-square bg-gray-200 rounded overflow-hidden mb-2">
+                        {p.image && (
+                          <img src={p.image} alt="" className="w-full h-full object-cover" />
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <Input
+                          value={p.image || ""}
+                          onChange={(e) => updatePath(`promotions.${i}.image`, e.target.value)}
+                          placeholder="URL"
+                          className="text-xs"
+                        />
+                        <ImageUploader
+                          onUploaded={(url) => updatePath(`promotions.${i}.image`, url)}
+                          authHeader={authHeader}
+                        />
+                      </div>
+                    </div>
+                    <div className="md:col-span-8 space-y-2">
+                      <Input
+                        value={p.title || ""}
+                        onChange={(e) => updatePath(`promotions.${i}.title`, e.target.value)}
+                        placeholder="Título de la promoción"
+                      />
+                      <Input
+                        value={p.subtitle || ""}
+                        onChange={(e) => updatePath(`promotions.${i}.subtitle`, e.target.value)}
+                        placeholder="Subtítulo o descripción corta"
+                      />
+                      <div className="grid grid-cols-2 gap-2">
+                        <Input
+                          value={p.cta_label || ""}
+                          onChange={(e) => updatePath(`promotions.${i}.cta_label`, e.target.value)}
+                          placeholder="Texto del botón (opcional)"
+                        />
+                        <Input
+                          value={p.cta_link || ""}
+                          onChange={(e) => updatePath(`promotions.${i}.cta_link`, e.target.value)}
+                          placeholder="URL o ancla (#servicios)"
+                        />
+                      </div>
+                      <div className="flex items-center justify-between pt-1">
+                        <label className="flex items-center gap-2 text-sm">
+                          <input
+                            type="checkbox"
+                            checked={p.active !== false}
+                            onChange={(e) => updatePath(`promotions.${i}.active`, e.target.checked)}
+                          />
+                          Visible en el sitio
+                        </label>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() =>
+                            updatePath(
+                              "promotions",
+                              draft.promotions.filter((_, idx) => idx !== i)
+                            )
+                          }
+                        >
+                          <Trash2 className="h-4 w-4 text-red-500" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() =>
+                    updatePath("promotions", [
+                      ...(draft.promotions || []),
+                      {
+                        id: Date.now(),
+                        title: "Nueva promoción",
+                        subtitle: "",
+                        image: "",
+                        cta_label: "",
+                        cta_link: "",
+                        active: true,
+                      },
+                    ])
+                  }
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Agregar promoción
+                </Button>
+              </div>
+            </Card>
+          </TabsContent>
 
           {/* EMPRESA */}
           <TabsContent value="empresa">

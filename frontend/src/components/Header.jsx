@@ -32,6 +32,7 @@ export const Header = ({ onOpenChat }) => {
   };
 
   const navItems = [
+    { label: 'Promociones', id: 'promociones', isLink: false },
     { label: 'Maquinaria', id: 'servicios', isLink: false },
     { label: 'Ventajas', id: 'ventajas', isLink: false },
     { label: 'Proceso', id: 'proceso', isLink: false },

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Header } from "../components/Header";
 import { HeroSection } from "../components/HeroSection";
+import { PromotionsSection } from "../components/PromotionsSection";
 import { MaquinariaSection } from "../components/MaquinariaSection";
 import { AdvantagesSection } from "../components/AdvantagesSection";
 import { ProcessSection } from "../components/ProcessSection";
@@ -18,6 +19,7 @@ export const Home = () => {
     <div className="min-h-screen bg-white">
       <Header onOpenChat={handleOpenChat} />
       <HeroSection onOpenChat={handleOpenChat} />
+      <PromotionsSection />
       <MaquinariaSection onOpenChat={handleOpenChat} />
       <AdvantagesSection />
       <ProcessSection />

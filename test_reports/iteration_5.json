@@ -1,0 +1,54 @@
+{
+  "summary": "Tested NEW admin features on top of iter4: theme editing (7 color pickers + 3 presets) and promotions CRUD with public visibility toggle, plus ThemeInjector CSS !important override engine. 6/6 backend pytest pass and full Playwright UI flow passes. ThemeInjector verified to override hardcoded Tailwind arbitrary classes (e.g. text-[#1a5336] resolves to var(--color-primary) at runtime).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "passed_tests": [
+    "GET /api/content includes theme key with primary/primaryDark/accent/accentDark/bgDark/bgLight/bgCream",
+    "Default theme: primary=#0a0a0a, accent=#F5C518 (after reset)",
+    "PUT /api/content with theme.primary=#ff0000 + accent=#00ff00 persists (verified via subsequent GET)",
+    "GET /api/content includes promotions array with 2 default banners (active=true, with image+title)",
+    "PUT /api/content updates promotions array (CRUD: add new, hide via active=false) and persists",
+    "POST /api/content/reset restores theme defaults AND 2 default promotions",
+    "Frontend / Hero h1 highlight 'retroexcavadora' computed color = rgb(245,197,24) = #F5C518",
+    "Frontend / Header contains 'Promociones' nav link",
+    "Frontend / #promociones section exists with h2 'Aprovecha nuestras ofertas del mes' and 2 promo-card-{id} testids",
+    "Frontend /admin shows 'Tema / Colores' and 'Promociones' tabs",
+    "Frontend Tema tab: 7 data-testid color pickers (theme-primary-picker..theme-bgCream-picker) all rendered",
+    "Frontend Tema tab: 3 presets (Perrón, Construcción naranja, Verde clásico) — clicking Verde sets primary input to #1a5336",
+    "Frontend Tema tab: change primary to #ff0000 + Save → reload / → header logo (uses text-[#1a5336]) computed color = rgb(255,0,0). Confirms ThemeInjector !important CSS override engine works on hardcoded Tailwind arbitrary classes.",
+    "Frontend Promociones tab: 2 default rows with 'Título de la promoción' inputs. 'Agregar promoción' adds 3rd row.",
+    "Frontend Promociones tab: 'Visible en el sitio' checkbox toggle hides the promo from / (verified 2 visible cards after hiding 1 of 2 originals + adding 1 new active)",
+    "Persistencia: admin Save → reload / → cambios reflejados (theme + promotions)"
+  ],
+  "test_report_links": [
+    "/app/backend/tests/test_theme_promotions.py",
+    "/app/test_reports/pytest/iter5_theme_promotions.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ThemeInjector.jsx: clean implementation injecting :root CSS vars + !important rules for legacy hardcoded hex classes (#1a5336, #c9a961, etc). useMemo correctly recomputes only when theme changes.",
+    "PromotionsSection.jsx hardcodes #0a0a0a and #F5C518 in the section background and decorative stripes (style attribute, not via theme). If user changes bgDark/accent in theme, the promociones section will NOT follow. Minor — explicit black/yellow CAT branding may be intentional, but flag for awareness.",
+    "content_routes.py DEFAULT_CONTENT.company.name is now 'Perrón' (was 'Shíntergy' in iter4). The legacy /app/backend/tests/test_admin_cms.py asserts company.name=='Shíntergy' after reset; that test is now stale and will fail if re-run. Recommend updating the assertion or removing that line.",
+    "AdminDashboard 'Tema' Save button is shared with all tabs (admin-save) — works fine but no per-tab feedback. Minor UX.",
+    "AdminDashboard Promociones tab does not allow reordering (drag/drop). For 2-3 promos this is OK.",
+    "ThemeInjector escape function does not escape uppercase hex letters but Tailwind generates lowercase class names; F5C518 in JSX className must be exactly as written in CSS selector — verify case-sensitivity edge cases for accent (#F5C518 vs #f5c518). Currently working because no element uses bg-[#F5C518] dynamically; PromotionsSection uses inline style instead.",
+    "No rate-limit / brute-force lockout on /api/auth/login (carry-over from iter4)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_theme_promotions.py"
+  ],
+  "success_rate": {"backend": "100% (6/6 pytest)", "frontend": "100% (theme + promotions + override engine all verified)"},
+  "test_credentials": "Admin: Shintergyadmin / TOTP secret KHXP3AGX6ZQRL5UML6HZARPOUOCNBNIN (use pyotp.TOTP(secret).now()).",
+  "seed_data_creation": "Test mutated theme.primary and promotions during testing; final teardown calls /api/content/reset to restore DEFAULT_CONTENT. No leftover test data.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "iter5 added /app/backend/tests/test_theme_promotions.py focused on theme + promotions only. iter4 test_admin_cms.py is mostly still valid except test_reset_content asserts company.name=='Shíntergy' which is now stale (default is 'Perrón'). data-testids added in iter5: theme-{primary,primaryDark,accent,accentDark,bgDark,bgLight,bgCream}-picker, promo-card-{id}, promotions-badge. Tab triggers use role=tab name='Tema / Colores' or 'Promociones'. ThemeInjector engine: it injects a <style> tag mapping legacy hardcoded hex Tailwind classes (e.g. .text-\\[#1a5336\\]) to var(--color-primary) with !important, so changing theme.primary visually rewrites the entire site without redeploy.",
+  "rca_of_the_issue": "N/A - no bugs found"
+}
