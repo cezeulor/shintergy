@@ -136,10 +136,10 @@ class TestContent:
         assert r.status_code == 200
         body = r.json()
         assert body.get("success") is True
-        assert body["data"]["company"]["name"] == "Shíntergy"
+        assert body["data"]["company"]["name"] == "Perrón"
         # Verify GET returns default
         cur = session.get(f"{BASE_URL}/api/content").json()
-        assert cur["company"]["name"] == "Shíntergy"
+        assert cur["company"]["name"] == "Perrón"
 
     def test_reset_content_no_token(self, session):
         r = session.post(f"{BASE_URL}/api/content/reset")
