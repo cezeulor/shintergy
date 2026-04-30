@@ -1,24 +1,25 @@
-// Mock data para Shíntergy - Renta de retroexcavadora Caterpillar 420F2 IT
+// Mock data para Perrón - Renta de retroexcavadora Caterpillar 420F2 IT
+// (usado solo como fallback antes de que el contenido del API se cargue)
 
 export const companyInfo = {
-  name: "Shíntergy",
+  name: "Perrón",
   tagline: "Renta de retroexcavadora Caterpillar con operador",
   subtitle:
-    "Más de 30 años de experiencia. Cobertura en Xalapa, Coatepec y zona conurbada.",
+    "Más de 23 años de experiencia. Cobertura en Xalapa, Coatepec y zona conurbada.",
   whatsapp: "+52 228 120 0243",
   whatsappDigits: "522281200243",
-  email: "contacto@shintergy.com",
+  email: "contacto@esperron.mx",
   phone: "228 120 0243",
   phoneDigits: "2281200243",
   horarios: "Lun a Sáb · 8:00 am – 6:00 pm",
   jornadaLaboral: "Jornada de 8 horas (7am – 4pm) con 1 hora de comida",
-  logo: "https://customer-assets.emergentagent.com/job_d72245cc-7a3d-410f-adc3-9ed7b232f5dd/artifacts/uukp3i9r_logo.jpg",
+  logo: "https://customer-assets.emergentagent.com/job_land-sales-pro/artifacts/dd43mrbw_Logo.png",
 };
 
 export const socialMedia = {
-  instagram: "https://instagram.com/shintergy",
-  facebook: "https://facebook.com/shintergy",
-  tiktok: "https://tiktok.com/@shintergy",
+  instagram: "https://instagram.com/esperron",
+  facebook: "https://facebook.com/esperron",
+  tiktok: "https://tiktok.com/@esperron",
   whatsapp: `https://wa.me/${companyInfo.whatsappDigits}`,
 };
 
@@ -205,7 +206,7 @@ export const chatQuestions = [
   {
     id: "welcome",
     type: "message",
-    text: "¡Hola! Soy el asistente de Shíntergy. Te ayudo a cotizar la renta de nuestra retroexcavadora Caterpillar 420F2 IT.",
+    text: "¡Hola! Soy el asistente de Perrón. Te ayudo a cotizar la renta de nuestra retroexcavadora Caterpillar 420F2 IT.",
     next: "rental_duration",
   },
   {
