@@ -109,6 +109,165 @@ const ListEditor = ({ items, onChange }) => {
   );
 };
 
+// --- library picker (modal showing previously uploaded images) -----------
+const LibraryPicker = ({ onPicked, authHeader }) => {
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchLibrary = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(`${API}/images`, { headers: authHeader() });
+      setItems(data || []);
+    } catch (err) {
+      toast.error("No se pudo cargar la biblioteca");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openModal = () => {
+    setOpen(true);
+    fetchLibrary();
+  };
+
+  const pick = (item) => {
+    const url = `${process.env.REACT_APP_BACKEND_URL}/api/images/${item.id}`;
+    onPicked(url);
+    setOpen(false);
+    toast.success("Imagen seleccionada");
+  };
+
+  const deleteItem = async (item, e) => {
+    e.stopPropagation();
+    if (!confirm(`¿Eliminar esta imagen de la biblioteca?`)) return;
+    try {
+      await axios.delete(`${API}/images/${item.id}`, { headers: authHeader() });
+      setItems((prev) => prev.filter((x) => x.id !== item.id));
+      toast.success("Eliminada de la biblioteca");
+    } catch {
+      toast.error("Error al eliminar");
+    }
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={openModal}
+        className="inline-flex items-center gap-2 bg-gray-800 hover:bg-gray-900 text-white text-sm px-3 py-2 rounded-md transition-colors"
+        data-testid="library-picker-open"
+      >
+        <ImageIcon className="h-4 w-4" />
+        Biblioteca
+      </button>
+
+      {open && (
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center p-4"
+          role="dialog"
+        >
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setOpen(false)}
+          />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden flex flex-col">
+            <header className="flex items-center justify-between p-4 border-b">
+              <h3 className="font-semibold text-gray-800 flex items-center gap-2">
+                <ImageIcon className="h-5 w-5" />
+                Biblioteca de imágenes
+              </h3>
+              <button
+                onClick={() => setOpen(false)}
+                className="p-1.5 hover:bg-gray-100 rounded-lg"
+              >
+                <Trash2 className="h-4 w-4 opacity-0 pointer-events-none" />
+                <span className="text-xl leading-none">×</span>
+              </button>
+            </header>
+
+            <div className="flex-1 overflow-y-auto p-4">
+              {loading ? (
+                <div className="flex items-center justify-center py-20">
+                  <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+                </div>
+              ) : items.length === 0 ? (
+                <div className="text-center py-16 text-gray-500">
+                  Aún no hay imágenes subidas. Usa "Subir archivo" para agregar la primera.
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {items.map((it) => {
+                    const url = `${process.env.REACT_APP_BACKEND_URL}/api/images/${it.id}`;
+                    return (
+                      <button
+                        type="button"
+                        key={it.id}
+                        onClick={() => pick(it)}
+                        data-testid={`library-item-${it.id}`}
+                        className="group relative aspect-square rounded-lg overflow-hidden border-2 border-transparent hover:border-gray-800 bg-gray-100"
+                      >
+                        <img
+                          src={url}
+                          alt={it.filename}
+                          className="w-full h-full object-cover"
+                        />
+                        <div
+                          role="button"
+                          onClick={(e) => deleteItem(it, e)}
+                          className="absolute top-1 right-1 bg-white/90 hover:bg-white p-1 rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity"
+                          title="Eliminar"
+                        >
+                          <Trash2 className="h-3 w-3 text-red-500" />
+                        </div>
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2 text-[10px] text-white text-left truncate">
+                          {it.filename}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+// --- combined image input (upload + library), NO manual URL -------------
+const ImageInput = ({ value, onChange, authHeader, aspect = "aspect-video" }) => (
+  <div className="space-y-2">
+    <div className={`${aspect} bg-gray-100 rounded-lg overflow-hidden border border-gray-200`}>
+      {value ? (
+        <img src={value} alt="" className="w-full h-full object-cover" />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+          Sin imagen
+        </div>
+      )}
+    </div>
+    <div className="flex gap-2 flex-wrap">
+      <ImageUploader onUploaded={onChange} authHeader={authHeader} />
+      <LibraryPicker onPicked={onChange} authHeader={authHeader} />
+      {value && (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => onChange("")}
+          className="text-red-500 border-red-200 hover:bg-red-50"
+        >
+          <Trash2 className="h-3.5 w-3.5 mr-1" />
+          Quitar
+        </Button>
+      )}
+    </div>
+  </div>
+);
+
 // --- image list editor (array of URLs) ------------------------------------
 const ImageListEditor = ({ urls, onChange, authHeader }) => {
   const remove = (i) => onChange(urls.filter((_, idx) => idx !== i));
@@ -133,7 +292,10 @@ const ImageListEditor = ({ urls, onChange, authHeader }) => {
           </div>
         ))}
       </div>
-      <ImageUploader onUploaded={add} authHeader={authHeader} />
+      <div className="flex gap-2 flex-wrap">
+        <ImageUploader onUploaded={add} authHeader={authHeader} />
+        <LibraryPicker onPicked={add} authHeader={authHeader} />
+      </div>
     </div>
   );
 };
@@ -392,23 +554,12 @@ export const AdminDashboard = () => {
                     className="grid md:grid-cols-12 gap-3 p-4 bg-gray-50 rounded-lg"
                   >
                     <div className="md:col-span-4">
-                      <div className="aspect-square bg-gray-200 rounded overflow-hidden mb-2">
-                        {p.image && (
-                          <img src={p.image} alt="" className="w-full h-full object-cover" />
-                        )}
-                      </div>
-                      <div className="flex gap-2">
-                        <Input
-                          value={p.image || ""}
-                          onChange={(e) => updatePath(`promotions.${i}.image`, e.target.value)}
-                          placeholder="URL"
-                          className="text-xs"
-                        />
-                        <ImageUploader
-                          onUploaded={(url) => updatePath(`promotions.${i}.image`, url)}
-                          authHeader={authHeader}
-                        />
-                      </div>
+                      <ImageInput
+                        value={p.image}
+                        onChange={(url) => updatePath(`promotions.${i}.image`, url)}
+                        authHeader={authHeader}
+                        aspect="aspect-square"
+                      />
                     </div>
                     <div className="md:col-span-8 space-y-2">
                       <Input
@@ -495,9 +646,17 @@ export const AdminDashboard = () => {
                 <Field label="Email" value={draft.company.email} onChange={(v) => updatePath("company.email", v)} />
                 <Field label="Horarios" value={draft.company.horarios} onChange={(v) => updatePath("company.horarios", v)} />
                 <Field label="Jornada laboral" value={draft.company.jornadaLaboral} onChange={(v) => updatePath("company.jornadaLaboral", v)} />
-                <Field label="URL del logo" value={draft.company.logo} onChange={(v) => updatePath("company.logo", v)} />
                 <Field label="Tagline (subtítulo corto)" value={draft.company.tagline} onChange={(v) => updatePath("company.tagline", v)} />
                 <Field label="Subtítulo" value={draft.company.subtitle} onChange={(v) => updatePath("company.subtitle", v)} rows={2} />
+              </div>
+              <h4 className="font-semibold text-sm text-[#1a5336] mt-6 mb-2">Logo de la empresa</h4>
+              <div className="max-w-sm">
+                <ImageInput
+                  value={draft.company.logo}
+                  onChange={(v) => updatePath("company.logo", v)}
+                  authHeader={authHeader}
+                  aspect="aspect-square"
+                />
               </div>
               <h4 className="font-semibold text-sm text-[#1a5336] mt-6 mb-2">Redes sociales</h4>
               <div className="grid md:grid-cols-3 gap-3">
@@ -645,22 +804,27 @@ export const AdminDashboard = () => {
             <Card title="Galería de proyectos">
               <div className="space-y-3">
                 {draft.galleryImages.map((g, i) => (
-                  <div key={g.id} className="grid md:grid-cols-12 gap-2 p-3 bg-gray-50 rounded-lg items-center">
-                    <div className="md:col-span-3">
-                      <div className="aspect-video bg-gray-200 rounded overflow-hidden">
-                        {g.url && <img src={g.url} alt="" className="w-full h-full object-cover" />}
-                      </div>
+                  <div key={g.id} className="grid md:grid-cols-12 gap-3 p-3 bg-gray-50 rounded-lg items-start">
+                    <div className="md:col-span-4">
+                      <ImageInput
+                        value={g.url}
+                        onChange={(url) => updatePath(`galleryImages.${i}.url`, url)}
+                        authHeader={authHeader}
+                        aspect="aspect-video"
+                      />
                     </div>
-                    <div className="md:col-span-9 space-y-2">
+                    <div className="md:col-span-8 space-y-2">
                       <Input value={g.title} onChange={(e) => updatePath(`galleryImages.${i}.title`, e.target.value)} placeholder="Título" />
                       <Input value={g.category} onChange={(e) => updatePath(`galleryImages.${i}.category`, e.target.value)} placeholder="Categoría" />
-                      <div className="flex gap-2">
-                        <Input value={g.url} onChange={(e) => updatePath(`galleryImages.${i}.url`, e.target.value)} placeholder="URL de imagen" />
-                        <ImageUploader onUploaded={(url) => updatePath(`galleryImages.${i}.url`, url)} authHeader={authHeader} />
-                        <Button variant="outline" size="icon" onClick={() => updatePath("galleryImages", draft.galleryImages.filter((_, idx) => idx !== i))}>
-                          <Trash2 className="h-4 w-4 text-red-500" />
-                        </Button>
-                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-red-500 border-red-200 hover:bg-red-50"
+                        onClick={() => updatePath("galleryImages", draft.galleryImages.filter((_, idx) => idx !== i))}
+                      >
+                        <Trash2 className="h-4 w-4 mr-1" />
+                        Quitar de la galería
+                      </Button>
                     </div>
                   </div>
                 ))}
