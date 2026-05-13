@@ -154,11 +154,7 @@ export const HeroSection = ({ onOpenChat }) => {
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-6 mt-14 max-w-xl animate-in fade-in slide-in-from-bottom-14 duration-700 delay-700">
-            {[
-              { number: '30+', label: 'Años del operador' },
-              { number: '500+', label: 'Obras completadas' },
-              { number: '12', label: 'Zonas de cobertura' },
-            ].map((s) => (
+            {(hero.stats || []).map((s) => (
               <div
                 key={s.label}
                 className="text-left border-l-2 border-[#c9a961]/60 pl-4"
