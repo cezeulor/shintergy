@@ -326,10 +326,14 @@ export const AdminDashboard = () => {
   const updatePath = (path, value) => {
     setDraft((prev) => {
       const next = JSON.parse(JSON.stringify(prev));
-      const parts = path.split(".");
-      let ref = next;
-      for (let i = 0; i < parts.length - 1; i++) ref = ref[parts[i]];
-      ref[parts[parts.length - 1]] = value;
+      const keys = path.split(".");
+      let current = next;
+      
+      for (let i = 0; i < keys.length - 1; i++) {
+        current = current[keys[i]];
+      }
+      
+      current[keys[keys.length - 1]] = value;
       return next;
     });
   };

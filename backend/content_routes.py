@@ -57,7 +57,7 @@ DEFAULT_CONTENT: Dict[str, Any] = {
             "subtitle": "Terracerías · Desmontes · Excavaciones · Drenajes",
             "image": "https://customer-assets.emergentagent.com/job_land-sales-pro/artifacts/l4qc64jv_WhatsApp%20Image%202026-04-29%20at%2007.26.08.jpeg",
             "cta_label": "Cotizar ahora",
-            "cta_link": "#servicios",
+            "cta_link": "https://wa.me/522281200243",
             "active": True,
         },
     ],
