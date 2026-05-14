@@ -62,7 +62,7 @@ export const PromotionsSection = () => {
                 data-testid={`promo-card-${p.id}`}
                 className="group relative rounded-2xl overflow-hidden bg-[#1a1a1a] border border-[#F5C518]/20 hover:border-[#F5C518]/70 shadow-2xl hover:shadow-[#F5C518]/20 transition-all duration-500 h-full"
               >
-                <div className="aspect-[4/5] md:aspect-[4/3] overflow-hidden">
+                <div className="aspect-square overflow-hidden">
                   <img
                     src={p.image}
                     alt={p.title}
